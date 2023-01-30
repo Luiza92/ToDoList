@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 public class UserService {
 
 
-
     @Autowired
     private ImageService imageService;
 
@@ -44,11 +43,13 @@ public class UserService {
     @Autowired
     UserRepo userRepo;
     private final JdbcTemplate jdbcTemplate;
+
     public UserService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public int add(User user) throws SQLException { ;
+    public int add(User user) throws SQLException {
+        ;
         int userId = this.userRepo.insert(user);
         return userId;
     }
@@ -73,8 +74,8 @@ public class UserService {
         return this.userRepo.getByUserId(userId);
     }
 
-    public List<User> getAllUsers(String limit, String skip)  {
-        return this.userRepo.getAllUsers(limit,skip);
+    public List<User> getAllUsers(String limit, String skip) {
+        return this.userRepo.getAllUsers(limit, skip);
 
     }
 
@@ -88,57 +89,21 @@ public class UserService {
         return userId;
     }
 
-    public boolean getUserAdminCount (int role_id) throws SQLException {
-
+    public boolean getUserAdminCount(int role_id) throws SQLException {
 
         String sql = ("SELECT COUNT(*) AS _count FROM users WHERE role_id = ?");
         Map<String, Object> result = jdbcTemplate.queryForMap(sql, role_id);
-
-      long count = (long) result.get("_count");
-
-        System.out.println("888888888888888 " + result.get("_count"));
-
-        System.out.println("1111111111111111111111 " + result );
-        System.out.println("2222222222222222222222 " + role_id );
+        long count = (long) result.get("_count");
 
         return (count == 1);
-
     }
 
     public int getUserCount() {
-        String mysqlUrl = "jdbc:mysql://localhost:3306/to_do_list_db";
-        Connection con = null;
-        try {
-            con = DriverManager.getConnection(mysqlUrl, "root", "");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        Statement stmt = null;
-        try {
-            stmt = con.createStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        String query = "select count(*) from users";
-        ResultSet rs = null;
-        try {
-            rs = stmt.executeQuery(query);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            rs.next();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        int count = 0;
-        try {
-            count = rs.getInt(1);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        String sql = ("select count(*) AS _count from users");
+        Map<String, Object> result = jdbcTemplate.queryForMap(sql);
+        long count = (long) result.get("_count");
 
-        return count;
+        return (int) count;
     }
 
     public ResponseEntity<String> userAdd(@NonNull User modelTO, @NonNull MultipartFile file) throws SQLException {
@@ -199,13 +164,13 @@ public class UserService {
                 res.put("error_message", "invalid image file");
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
-            if (roleId >= 4 || roleId <= 0 ) {
+            if (roleId >= 4 || roleId <= 0) {
                 res.put("error_message", "invalid roleId  ");
                 return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
             }
 
 
-           GenerateUUID generateUUID = new GenerateUUID();
+            GenerateUUID generateUUID = new GenerateUUID();
             String randomId = generateUUID.Generate();
             System.err.println(randomId);
 
@@ -255,7 +220,7 @@ public class UserService {
             System.out.println("randomId " + randomId);
             System.err.println("link : " + link);
 
-           this.sendEmail(user.getEmail(), link, TimeExpiresDateExDate);
+            this.sendEmail(user.getEmail(), link, TimeExpiresDateExDate);
 
 
             res.put("id", user1.getId());

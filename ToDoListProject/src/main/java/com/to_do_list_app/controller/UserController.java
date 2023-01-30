@@ -64,23 +64,22 @@ public class UserController {
         JSONObject res = new JSONObject();
 
         try {
-
-            String bearer = headers.get("authorization");
-            String accessToken = bearer.replace("Bearer ", "");
-
-
-
-            String aToken = accessToken;
-            AccessToken accessToken1 = this.accessTokenService.getByAccessToken(aToken);
-
-            int userId1 = accessToken1.getUserId();
-
-            User user1 = this.userService.getByUserId(userId1);
-
-            if (user1.getRoleId() != 1){
-                res.put("error_message", "access denied ");
-                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
-            }
+//
+//            String bearer = headers.get("authorization");
+//            String accessToken = bearer.replace("Bearer ", "");
+//
+//
+//            String aToken = accessToken;
+//            AccessToken accessToken1 = this.accessTokenService.getByAccessToken(aToken);
+//
+//            int userId1 = accessToken1.getUserId();
+//
+//            User user1 = this.userService.getByUserId(userId1);
+//
+//            if (user1.getRoleId() != 1){
+//                res.put("error_message", "access denied ");
+//                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+//            }
 
             return  userService.userAdd(modelTO, file);
 
@@ -150,7 +149,7 @@ public class UserController {
         }
 
         res.put("users", new JSONArray());
-        res.put("count", this.userService.getUserCount());
+        res.put("count", this.userService. getUserCount());
 
 
         try {

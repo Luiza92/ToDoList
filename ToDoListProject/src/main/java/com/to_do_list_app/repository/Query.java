@@ -11,6 +11,8 @@ public class Query {
 
     public static String toDoListAdd = ("insert into to_do_list (id, title, description, created_at, expired_at, is_complete, user_id) values (?,?,?,?,?,?,?)");
     public static String toDoListGet = ("select * from to_do_list where id = ? ");
+
+    String query = "select count(*) from users";
     public static String GetAllToDoList = ("select * from to_do_list where user_id = ?");
     public static String toDoListDelete = ("delete from to_do_list where id = ?");
     public static String toDoListDeleteByUserId = ("delete from to_do_list where user_id = ?");

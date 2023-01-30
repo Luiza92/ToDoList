@@ -28,7 +28,11 @@ public class ToDoListRepo implements ToDoListRepository{
 
     @Override
     public ToDoList get(int id) throws SQLException {
-        String sql = (Query.toDoListGet);
+        String sql = ("select * from to_do_list where id = ? ");
+
+        // SELECT COUNT(*) FROM to_do_list WHERE user_id = 1
+
+
 
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(sql, id);
         if (rows.size() == 0)
@@ -135,7 +139,7 @@ public class ToDoListRepo implements ToDoListRepository{
 
     @Override
     public List<ToDoList> getAllToDoLists(int userId) {
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(Query.GetAllToDoList, userId);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList("SELECT * FROM to_do_list WHERE user_id = ?", userId);
         List<ToDoList> toDoLists = new ArrayList<>();
         result.forEach(toDoLists1 -> {
 

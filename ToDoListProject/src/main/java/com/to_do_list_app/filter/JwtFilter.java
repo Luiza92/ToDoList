@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -37,6 +38,8 @@ public class JwtFilter extends GenericFilterBean {
 
     @Autowired
     private AccessTokenService accessTokenService;
+    @Autowired
+    private UserService userService;
 
     private static final String AUTHORIZATION = "Authorization";
 
@@ -44,8 +47,9 @@ public class JwtFilter extends GenericFilterBean {
 
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc)
+    public void doFilter(ServletRequest request, ServletResponse _response, FilterChain fc)
             throws IOException, ServletException {
+        HttpServletResponse response = (HttpServletResponse) _response;
 
         JSONObject res = new JSONObject();
 
@@ -69,45 +73,20 @@ public class JwtFilter extends GenericFilterBean {
             final JwtAuthentication jwtInfoToken = JwtUtils.generate(claims);
             jwtInfoToken.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(jwtInfoToken);
+            System.out.println("token " + token );
+
+       //     String accessToken = token.replace("Bearer ", "");
 
 
-            AccessToken accessToken1 = null;
-            try {
-                accessToken1 = this.accessTokenService.getByAccessToken(token);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            if (checkUserApiPermission(token, method, path) == false) {
+                sendError(response, "access denied", HttpServletResponse.SC_FORBIDDEN);
+                return;
             }
 
-            //         int userId = accessToken1.getUserId();
-
-
-//            try {
-//                User user = this.userService.getByUserId(userId);
-//
-//                if(user.getRoleId() != 1 ){
-//                    System.out.println("role error ");
-//                }
-//
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            }
-
-
-            // User get from service by token
-
-            // user.getRoleId() == 1 => true
-
             fc.doFilter(request, response);
-
             return;
         }
-
-        response.setContentType("application/json");
-        res.put("error_message", "invalid accessToken");
-
-        response.getWriter().print(res.toString());
-        response.flushBuffer();
-
+        sendError(response, "invalid accessToken", HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
@@ -119,5 +98,52 @@ public class JwtFilter extends GenericFilterBean {
         return null;
     }
 
+    private Boolean checkUserApiPermission(String token, String method, String path) {
 
+        //path.startsWith("/api/user") == false && path.equalsIgnoreCase("get") == false
+
+        if (path.startsWith("/api/user") == false ){
+            return true;
+        }
+
+        AccessToken accessToken1 = null;
+        try {
+            accessToken1 = this.accessTokenService.getByAccessToken(token);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        int userId1 = accessToken1.getUserId();
+
+        User user1 = null;
+        try {
+            user1 = this.userService.getByUserId(userId1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (user1.getRoleId() != 1) {
+            System.out.println("error_message access denied");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public static boolean sendError(HttpServletResponse response, String msg, int code){
+        try
+        {
+            JSONObject res = new JSONObject();
+            response.setContentType("application/json");
+            res.put("error_message", msg);
+            response.setStatus(code);
+            response.getWriter().print(res);
+            response.flushBuffer();
+            return true;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
+    }
 }

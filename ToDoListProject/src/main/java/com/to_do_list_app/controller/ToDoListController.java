@@ -107,21 +107,22 @@ public class ToDoListController {
 
 
     @GetMapping(path = "/api/ToDoLists", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllToDoLists(@RequestHeader Map<String, String> headers) {
+    public ResponseEntity<?> getAllToDoLists(@RequestHeader Map<String, String> headers) throws SQLException {
         JSONObject res = new JSONObject();
 
+        String bearer = headers.get("authorization");
+        String accessToken = bearer.replace("Bearer ", "");
+
+        String aToken = accessToken;
+        AccessToken accessToken1 = this.accessTokenService.getByAccessToken(aToken);
+
+        int userId1 = accessToken1.getUserId();
+
         res.put("toDoLists", new JSONArray());
-    //    res.put("count", this.toDoListService.getToDoListsCount());
+       res.put("count", this.toDoListService. getToDoListCount(userId1));
+
 
         try {
-            String bearer = headers.get("authorization");
-            String accessToken = bearer.replace("Bearer ", "");
-
-
-            String aToken = accessToken;
-            AccessToken accessToken1 = this.accessTokenService.getByAccessToken(aToken);
-
-            int userId1 = accessToken1.getUserId();
 
 
             ToDoList toDoList2 = this.toDoListService.getByUserId(userId1);
