@@ -1,0 +1,913 @@
+{
+	"info": {
+		"_postman_id": "0fb380a2-71d5-4312-8465-06b73ff1bb97",
+		"name": "ToDoListProject",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17216886"
+	},
+	"item": [
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "Add user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NDczNjUxNCwicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.T0adlNJ6xqRBe8EXSvnDzf7auW0A9k6o28HsQNZVco4x7_zgAK6q2wqU7u0BZ3I6kkIfQRLrPKbrAu37tJPa1A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "alik",
+									"type": "text"
+								},
+								{
+									"key": "firstName",
+									"value": "alik",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "vardanyan",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "vardanyanalik93@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Luiza/Desktop/photo_2023-01-11_17-07-11.jpg"
+								},
+								{
+									"key": "roleId",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "vardanyan",
+									"type": "text"
+								},
+								{
+									"key": "confirmPassword",
+									"value": "vardanyan",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/user",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NDgyNTU0Miwicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.Z85YL5U7KpAE4j6zggMrO7gw56EoNBzT4tKtetJQa1og7ZBqxcdNU3QYAmz-7e-rvjCgQAsY7rINv47fu9KABQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/user/3",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"user",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get  All users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NTA2ODk1MSwicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.Q_d0b7q8ceK-VajK4OI-Ob81wJvab-sWsGZwBvqqa0CI_QDGEp4iYm0QZXpaamEXxtlz0AXHW3azSkj3oQPdAQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/users?limit=1&skip=0",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NDgzNDI1Nywicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.3yiZowv6L3-TuZ_F19PmEmmWicg1vEOUjqwBLhqDuKm66GsYKIz34GSsvFBnqf3R_HYhL3ql0qBUJ9XvbWlvHQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/user/19",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"user",
+								"19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NDcyNDIxMywicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.ztquo33mC3jHCeRbsXlcMAQsMQAQ8eLDzmEQPClnfHsvEUgJ0LHxCtONFxXq7P3oK5CyHe2UdCngOyDK-8Bmlw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "firstName",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "roleId",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "confirmPassword",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/user/18",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"user",
+								"18"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "to_do_list",
+			"item": [
+				{
+					"name": "add to do list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6MSIsImV4cCI6MTY3NDgxNDg0Mywicm9sZXMiOiJ7XCJuYW1lXCI6XCJ1c2VyXCIsXCJpZFwiOjN9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.asMFj0MoXNzjFzBEEq-vK_q15lXIq_TMmDH1yj3LlpNE0-dXbRxK9i9uHmabD3nmSRoYd5ltcS9bUfhd7Pi4RA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Title2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Description2",
+									"type": "text"
+								},
+								{
+									"key": "isComplete",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "expiredAt",
+									"value": "2020-06-17 15:36:24",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/ToDoList",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"ToDoList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get to do list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NTA2OTE1Mywicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.yOf1YqxlvCi6tpYUKZm13By3ElZprBXkfPAsbtnQnGOhg0PC1aovSV0uVytyvwZeVeYzG4zGT1DxIstkQTmFOA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/ToDoLists",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"ToDoLists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete to do list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NTA2OTE1Mywicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.yOf1YqxlvCi6tpYUKZm13By3ElZprBXkfPAsbtnQnGOhg0PC1aovSV0uVytyvwZeVeYzG4zGT1DxIstkQTmFOA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/ToDoList/23",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"ToDoList",
+								"23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update to do list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NTA2OTE1Mywicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.yOf1YqxlvCi6tpYUKZm13By3ElZprBXkfPAsbtnQnGOhg0PC1aovSV0uVytyvwZeVeYzG4zGT1DxIstkQTmFOA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "titleffff22222",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "description",
+									"type": "text"
+								},
+								{
+									"key": "isComplete",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "expiredAt",
+									"value": "2025-06-17 15:36:24",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8088/api/ToDoList/17",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8088",
+							"path": [
+								"api",
+								"ToDoList",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "registration",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "luiza",
+							"type": "text"
+						},
+						{
+							"key": "firstName",
+							"value": "luiza",
+							"type": "text"
+						},
+						{
+							"key": "lastName",
+							"value": "harutyuinayan",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "luiza.herzeyaunyan20@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Luiza/Desktop/photo_2023-01-11_17-07-11.jpg"
+						},
+						{
+							"key": "password",
+							"value": "luiza555",
+							"type": "text"
+						},
+						{
+							"key": "confirmPassword",
+							"value": "luiza555",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8088/api/registration",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8088",
+					"path": [
+						"api",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "editProfile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6IiwiZXhwIjoxNjc0NTQ4MDcwLCJyb2xlcyI6IntcIm5hbWVcIjpcInVzZXJcIixcImlkXCI6M30iLCJmaXJzdE5hbWUiOiJsdWl6YSJ9.wmoMj8fhadAbklxkpdrwWN5hPQmz-fcpkun9rOk_Pi7APLOckP5xzX1IMUnGWYq2ydwy23xvpG0-0LNPHJJ88w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "luizav",
+							"type": "text"
+						},
+						{
+							"key": "firstName",
+							"value": "luiza",
+							"type": "text"
+						},
+						{
+							"key": "lastName",
+							"value": "harutyunyan",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "luiza.harutyunyan20@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Luiza/Desktop/photo_2023-01-11_17-07-11.jpg"
+						},
+						{
+							"key": "password",
+							"value": "luiza555",
+							"type": "text"
+						},
+						{
+							"key": "confirmPassword",
+							"value": "luiza555",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8088/api/editProfile",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8088",
+					"path": [
+						"api",
+						"editProfile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getProfile",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6IiwiZXhwIjoxNjc0NTQ4MDcwLCJyb2xlcyI6IntcIm5hbWVcIjpcInVzZXJcIixcImlkXCI6M30iLCJmaXJzdE5hbWUiOiJsdWl6YSJ9.wmoMj8fhadAbklxkpdrwWN5hPQmz-fcpkun9rOk_Pi7APLOckP5xzX1IMUnGWYq2ydwy23xvpG0-0LNPHJJ88w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8088/api/getProfile",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8088",
+					"path": [
+						"api",
+						"getProfile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteProfile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY3NDczNjUxNCwicm9sZXMiOiJ7XCJuYW1lXCI6XCJhZG1pbmlzdHJhdG9yXCIsXCJpZFwiOjF9IiwiZmlyc3ROYW1lIjoibHVpemEifQ.T0adlNJ6xqRBe8EXSvnDzf7auW0A9k6o28HsQNZVco4x7_zgAK6q2wqU7u0BZ3I6kkIfQRLrPKbrAu37tJPa1A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8088/api/deleteProfile",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8088",
+					"path": [
+						"api",
+						"deleteProfile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "luiza",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "luiza555",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8088/api/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8088",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6IiwiZXhwIjoxNjc0NjQ0MzU3LCJyb2xlcyI6IntcIm5hbWVcIjpcInVzZXJcIixcImlkXCI6M30iLCJmaXJzdE5hbWUiOiJsdWl6YSJ9.7XwyhD5etWbwFJTqz0RZWkfrq5niBKICOkMPKR6KfUs8VZiRO4xIXIdfOF3iqUqzfrQRZ3DitwblPkuISkJenQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8088/api/logout",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8088",
+					"path": [
+						"api",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refresh token Api",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6IiwiZXhwIjoxNjc0NjU4ODY4LCJyb2xlcyI6IntcIm5hbWVcIjpcInVzZXJcIixcImlkXCI6M30iLCJmaXJzdE5hbWUiOiJsdWl6YSJ9.9jv7NS2pOAbrVyV-ToBiJAUlitovStUuC-BT3_JQf2TDx2afjoa9r38dbZwjwfxGAsNJIX7Dchk81KYqPSFjLg5",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdXNsdWl6YTQiLCJleHAiOjE2NTI2MDU4MzYsImlhdCI6MTY1MDAxMzgzNn0.5blqN4q3lYsFqF38md79KCBSbPBo80ICORSOzKOq3TciqS6wNJR2FWEQNEkttM--l3B-cFzU2ojr1AthDOLn2Q",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "refreshToken",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6IiwiZXhwIjoxNjc5ODM5MjY4fQ.SgJ5tmdP0M9ZODZx2qnUaV_1JFj1a23pE3Mv_eyY_UI2vhw1rtKJtn_TAJo8X4BjzHmyVI8NvWNuQ0Imf922vA",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8088/api/RefreshToken",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8088",
+					"path": [
+						"api",
+						"RefreshToken"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
