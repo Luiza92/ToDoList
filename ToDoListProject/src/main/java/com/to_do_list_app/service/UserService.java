@@ -1,10 +1,13 @@
 package com.to_do_list_app.service;
 
+import com.to_do_list_app.model.AccessToken;
 import com.to_do_list_app.model.Approve;
+import com.to_do_list_app.model.Image;
 import com.to_do_list_app.model.User;
 import com.to_do_list_app.repository.UserRepo;
 import com.to_do_list_app.validation.UserValidation;
 import lombok.NonNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -37,6 +40,17 @@ public class UserService {
 
     @Autowired
     private ApproveService approveService;
+
+    @Autowired
+    private AccessTokenService accessTokenService;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private ToDoListService toDoListService;
+
+    @Autowired
+    private RoleService roleService;
 
     UserValidation userValidation = new UserValidation();
 
@@ -89,10 +103,10 @@ public class UserService {
         return userId;
     }
 
-    public boolean getUserAdminCount(int role_id) throws SQLException {
+    public boolean getUserAdminCount(int roleId) throws SQLException {
 
         String sql = ("SELECT COUNT(*) AS _count FROM users WHERE role_id = ?");
-        Map<String, Object> result = jdbcTemplate.queryForMap(sql, role_id);
+        Map<String, Object> result = jdbcTemplate.queryForMap(sql, roleId);
         long count = (long) result.get("_count");
 
         return (count == 1);
@@ -283,5 +297,237 @@ public class UserService {
         ClassLoader classLoader = RegistrationService.class.getClassLoader();
         return classLoader.getResourceAsStream(fileName);
     }
+
+    public ResponseEntity<String> allUsers(String limit, String skip) throws SQLException {
+        JSONObject res = new JSONObject();
+
+        if ((Integer.parseInt(limit) < 0) || (Integer.parseInt(skip) < 0)) {
+            res.put("message", "Value cannot be negative");
+            return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+        res.put("users", new JSONArray());
+        res.put("count", this.getUserCount());
+
+        try {
+
+            List<User> user = this.getAllUsers(limit, skip);
+            user.forEach(user1 -> {
+
+                int imageId = user1.getImageId();
+                Image image = null;
+                try {
+                    image = this.imageService.get(imageId);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                if (image != null)
+                    user1.setImage(image.toJson());
+
+
+                int roleId = user1.getRoleId();
+                try {
+                    user1.setRole(this.roleService.roleGet(roleId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                res.getJSONArray("users").put(user1.toJson());
+
+            });
+
+            return new ResponseEntity<>(res.toString(), HttpStatus.OK);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            res.put("error_message", "not found ");
+            return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    public ResponseEntity<String> userDelete(int userId, String accessToken) throws SQLException {
+        JSONObject res = new JSONObject();
+
+        try {
+            String aToken = accessToken;
+
+            AccessToken accessToken1 = this.accessTokenService.getByAccessToken(aToken);
+
+            int userId1 = accessToken1.getUserId();
+
+            User user2 = this.getByUserId(userId1);
+
+            int roleId = user2.getRoleId();
+
+            if (roleId != 1) {
+                res.put("error_message", "access denied");
+                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+            }
+
+            User user = this.get(userId);
+            if (user == null) {
+                res.put("message", "not found ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+            }
+
+            int roleId1 = user.getRoleId();
+
+            if (roleId1 == 1) {
+                if (this.getUserAdminCount(roleId) == true) {
+                    res.put("error_message", "can't delete last admin");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+                }
+            }
+
+            int imageId = user.getImageId();
+            Image image = this.imageService.get(imageId);
+
+            if (image != null) {
+                this.imageService.delete(imageId);
+                this.imageService.deleteFile(image);
+            }
+
+            this.accessTokenService.deleteByUserId(userId);
+            this.refreshTokenService.deleteByUserId(userId);
+            this.toDoListService.deleteBYUserId(userId);
+            this.approveService.deleteByUserId(userId);
+            this.delete(userId);
+
+            res.put("message", "Deleted");
+            return new ResponseEntity<>(res.toString(), HttpStatus.OK);
+
+        } catch (
+                Exception ex) {
+            ex.printStackTrace();
+            res.put("error_message", "not found");
+            return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    public ResponseEntity<String> userPut(User modelTO, MultipartFile file, int userId) {
+
+
+        JSONObject res = new JSONObject();
+        try {
+
+            User user = this.get(userId);
+
+            if (user == null) {
+                res.put("error_message", "user not found ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+            }
+
+            if (modelTO.getUsername() != null && userValidation.isValidUsername(modelTO.getUsername()) == false) {
+                res.put("error_message", "Error Invalid Username");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getFirstName() != null && userValidation.isValidFirstName(modelTO.getFirstName()) == false) {
+                res.put("error_message", "Error Invalid FirstName");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getLastName() != null && userValidation.isValidLastName(modelTO.getLastName()) == false) {
+                res.put("error_message", "Error Invalid LastName ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getEmail() != null && userValidation.isValidEmail(modelTO.getEmail()) == false) {
+                res.put("error_message", "Error Invalid Email");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getConfirmPassword() != null && modelTO.getPassword() != null) {
+
+                if (!modelTO.getPassword().equals(modelTO.getConfirmPassword())) {
+                    res.put("error message - ", "password does not match");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+                }
+
+                if (modelTO.getPassword() != null && userValidation.isValidPassword(modelTO.getPassword()) == false) {
+                    res.put("error_message", "Error Invalid Password");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+                }
+
+                user.setPassword(new BCryptPasswordEncoder().encode(modelTO.getPassword()));
+            }
+
+            Image img = this.imageService.get(user.getImageId());
+
+            JSONObject fileObject = null;
+
+
+            if (file != null && !file.isEmpty()) {
+
+                if (file.getContentType().startsWith("image") == false) {
+                    res.put("error_message", "invalid image file");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+                }
+
+                if (file.getContentType().startsWith("image") == false) {
+                    res.put("error_message", "invalid image file");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+                }
+
+                if (img != null) {
+                    this.imageService.deleteFile(img);
+                    this.imageService.delete(img.getId());
+
+                }
+                fileObject = this.imageService.saveFile(file, "image");
+                System.err.println(fileObject + "- fileObject");
+
+            } else {
+                if (img != null) {
+                    fileObject = img.toJson();
+                }
+            }
+            if (fileObject != null) {
+                user.setImage(fileObject);
+                user.setImageId(fileObject.getInt("id"));
+            }
+
+            JSONObject roleObject = this.roleService.roleGet(user.getRoleId());
+
+            if (modelTO.getUsername() != null) {
+                user.setUsername(modelTO.getUsername());
+            }
+            if (modelTO.getFirstName() != null) {
+                user.setFirstName(modelTO.getFirstName());
+            }
+            if (modelTO.getLastName() != null) {
+                user.setLastName(modelTO.getLastName());
+            }
+            if (modelTO.getEmail() != null) {
+                user.setEmail(modelTO.getEmail());
+            }
+
+            user.setUpdatedAt(modelTO.getUpdatedAt());
+            user.setRole(roleObject);
+
+            this.update(user);
+
+
+            return new ResponseEntity<>(user.toJsonString(), HttpStatus.OK);
+
+        } catch (
+                NullPointerException ex) {
+            res.put("error_message", "NullPointerException");
+            ex.printStackTrace();
+            return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+        } catch (
+                DuplicateKeyException ex) {
+            res.put("error_message", "DUPLICATE ERROR MESSAGE ");
+            return new ResponseEntity<>(res.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (
+                Exception ex) {
+            res.put("error_message", "this user not found ");
+            ex.printStackTrace();
+            return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }

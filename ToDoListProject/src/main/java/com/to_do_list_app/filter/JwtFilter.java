@@ -75,9 +75,6 @@ public class JwtFilter extends GenericFilterBean {
             SecurityContextHolder.getContext().setAuthentication(jwtInfoToken);
             System.out.println("token " + token );
 
-       //     String accessToken = token.replace("Bearer ", "");
-
-
             if (checkUserApiPermission(token, method, path) == false) {
                 sendError(response, "access denied", HttpServletResponse.SC_FORBIDDEN);
                 return;
@@ -129,6 +126,39 @@ public class JwtFilter extends GenericFilterBean {
 
         return true;
     }
+
+    private Boolean checkUserProfile (String token, String method, String path) {
+
+        //path.startsWith("/api/user") == false && path.equalsIgnoreCase("get") == false
+
+        if (path.startsWith("/api/user") == false ){
+            return true;
+        }
+
+        AccessToken accessToken1 = null;
+        try {
+            accessToken1 = this.accessTokenService.getByAccessToken(token);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        int userId1 = accessToken1.getUserId();
+
+        User user1 = null;
+        try {
+            user1 = this.userService.getByUserId(userId1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (user1.getRoleId() != 1) {
+            System.out.println("error_message access denied");
+            return false;
+        }
+
+        return true;
+    }
+
 
 
     public static boolean sendError(HttpServletResponse response, String msg, int code){
