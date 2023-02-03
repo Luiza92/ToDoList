@@ -120,144 +120,6 @@ public class UserService {
         return (int) count;
     }
 
-    public ResponseEntity<String> userAdd(@NonNull User modelTO, @NonNull MultipartFile file) throws SQLException {
-        JSONObject res = new JSONObject();
-        try {
-
-            String username = modelTO.getUsername();
-            String email = modelTO.getEmail();
-            int roleId = modelTO.getRoleId();
-
-
-            if (userValidation.isValidUsername(modelTO.getUsername()) == false) {
-                res.put("error_message", "Error Invalid Username ");
-                System.out.println("username- " + res);
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-            if (this.getByUsername(username) != null) {
-                res.put("error message ", "DUPLICATE USERNAME");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidFirstName(modelTO.getFirstName()) == false) {
-                res.put("error_message", "Error Invalid FirstName ");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidLastName(modelTO.getLastName()) == false) {
-                res.put("error_message", "Error Invalid LastName ");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidEmail(modelTO.getEmail()) == false) {
-                res.put("error_message", "Error Invalid Email");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (this.getByEmail(email) != null) {
-                res.put("error message ", "DUPLICATE EMAIL");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (!modelTO.getPassword().equals(modelTO.getConfirmPassword())) {
-                res.put("error message - ", "password does not match");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidPassword(modelTO.getPassword()) == false) {
-                res.put("error_message", "Error Invalid Password");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (file.isEmpty()) {
-                res.put("error_message", "not found image ");
-                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
-            }
-
-            if (file.getContentType().startsWith("image") == false) {
-                res.put("error_message", "invalid image file");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-            if (roleId >= 4 || roleId <= 0) {
-                res.put("error_message", "invalid roleId  ");
-                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
-            }
-
-
-            GenerateUUID generateUUID = new GenerateUUID();
-            String randomId = generateUUID.Generate();
-            System.err.println(randomId);
-
-
-            Timestamp expiresTimestamp = new Timestamp(System.currentTimeMillis());
-
-
-            Calendar c = Calendar.getInstance();
-            c.setTime(expiresTimestamp);
-            c.add(Calendar.MINUTE, (1));
-            Timestamp TimeExpiresDateExDate = new Timestamp(c.getTimeInMillis());
-
-            JSONObject fileObject = this.imageService.saveFile(file, "image");
-
-            modelTO.setImageId(fileObject.getInt("id"));
-            modelTO.setImage(fileObject);
-
-
-            User user = new User(modelTO, TimeExpiresDateExDate, fileObject);
-
-            user.setUsername(modelTO.getUsername());
-            user.setFirstName(modelTO.getFirstName());
-            user.setLastName(modelTO.getLastName());
-            user.setEmail(modelTO.getEmail());
-            user.setPassword(new BCryptPasswordEncoder().encode(modelTO.getPassword()));
-            user.setImage(fileObject);
-            user.setStatus(0);
-            user.setRoleId(modelTO.getRoleId());
-
-
-            int userId = this.add(user);
-
-            Approve approve = new Approve();
-
-            approve.setUserId(userId);
-            approve.setRandomId(randomId);
-            approve.setTimeExpires(TimeExpiresDateExDate);
-
-
-            int approve1 = this.approveService.insert(approve);
-
-            User user1 = this.get(userId);
-
-            String link = (String.format("http://127.0.0.1:8088/api/approve?user_id=%s&random_id=%s", userId, randomId));
-
-            System.out.println("userId " + userId);
-            System.out.println("randomId " + randomId);
-            System.err.println("link : " + link);
-
-            this.sendEmail(user.getEmail(), link, TimeExpiresDateExDate);
-
-
-            res.put("id", user1.getId());
-            res.put("username", user1.getUsername());
-            res.put("firstName", user1.getFirstName());
-            res.put("lastName", user1.getLastName());
-            res.put("email", user1.getEmail());
-            res.put("imageId", fileObject);
-            res.put("TimeExpires", approve.getTimeExpires());
-
-
-            return new ResponseEntity<>(res.toString(), HttpStatus.OK);
-
-        } catch (DuplicateKeyException ex) {
-            res.put("error_message", "DUPLICATE ERROR MESSAGE ");
-            return new ResponseEntity<>(res.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
-        } catch (Exception ex) {
-            res.put("error_message", "server error  ");
-            ex.printStackTrace();
-            return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-        }
-
-    }
 
     @Autowired
     private JavaMailSender sender;
@@ -345,6 +207,144 @@ public class UserService {
         }
     }
 
+    public ResponseEntity<String> userAdd(@NonNull User modelTO, @NonNull MultipartFile file) throws SQLException {
+        JSONObject res = new JSONObject();
+        try {
+
+            String username = modelTO.getUsername();
+            String email = modelTO.getEmail();
+            int roleId = modelTO.getRoleId();
+
+
+            if (modelTO.getUsername() == null || !userValidation.isValidUsername(modelTO.getUsername())) {
+                res.put("error_message", "Error Invalid Username ");
+                System.out.println("username- " + res);
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+            if (this.getByUsername(username) != null) {
+                res.put("error message ", "DUPLICATE USERNAME");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getFirstName() == null || !userValidation.isValidFirstName(modelTO.getFirstName())) {
+                res.put("error_message", "Error Invalid FirstName ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getLastName() == null || !userValidation.isValidLastName(modelTO.getLastName())) {
+                res.put("error_message", "Error Invalid LastName ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getEmail() == null || !userValidation.isValidEmail(modelTO.getEmail())) {
+                res.put("error_message", "Error Invalid Email");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (this.getByEmail(email) != null) {
+                res.put("error message ", "DUPLICATE EMAIL");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getConfirmPassword() == null || modelTO.getPassword() == null || !modelTO.getPassword().equals(modelTO.getConfirmPassword())) {
+                res.put("error message - ", "password does not match");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (!userValidation.isValidPassword(modelTO.getPassword())) {
+                res.put("error_message", "Error Invalid Password");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (file.isEmpty()) {
+                res.put("error_message", "not found image ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+            }
+
+            if (file.getContentType() == null || !file.getContentType().startsWith("image")) {
+                res.put("error_message", "invalid image file");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+            if (roleId >= 4 || roleId <= 0) {
+                res.put("error_message", "invalid roleId  ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+            }
+
+
+            GenerateUUID generateUUID = new GenerateUUID();
+            String randomId = generateUUID.Generate();
+            System.err.println(randomId);
+
+
+            Timestamp expiresTimestamp = new Timestamp(System.currentTimeMillis());
+
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(expiresTimestamp);
+            c.add(Calendar.MINUTE, (1));
+            Timestamp TimeExpiresDateExDate = new Timestamp(c.getTimeInMillis());
+
+            JSONObject fileObject = this.imageService.saveFile(file, "image");
+
+            modelTO.setImageId(fileObject.getInt("id"));
+            modelTO.setImage(fileObject);
+
+
+            User user = new User(modelTO, TimeExpiresDateExDate, fileObject);
+
+            user.setUsername(modelTO.getUsername());
+            user.setFirstName(modelTO.getFirstName());
+            user.setLastName(modelTO.getLastName());
+            user.setEmail(modelTO.getEmail());
+            user.setPassword(new BCryptPasswordEncoder().encode(modelTO.getPassword()));
+            user.setImage(fileObject);
+            user.setStatus(0);
+            user.setRoleId(modelTO.getRoleId());
+
+
+            int userId = this.add(user);
+
+            Approve approve = new Approve();
+
+            approve.setUserId(userId);
+            approve.setRandomId(randomId);
+            approve.setTimeExpires(TimeExpiresDateExDate);
+
+
+            int approve1 = this.approveService.insert(approve);
+
+            User user1 = this.get(userId);
+
+            String link = (String.format("http://127.0.0.1:8088/api/approve?user_id=%s&random_id=%s", userId, randomId));
+
+            System.out.println("userId " + userId);
+            System.out.println("randomId " + randomId);
+            System.err.println("link : " + link);
+
+            this.sendEmail(user.getEmail(), link, TimeExpiresDateExDate);
+
+
+            res.put("id", user1.getId());
+            res.put("username", user1.getUsername());
+            res.put("firstName", user1.getFirstName());
+            res.put("lastName", user1.getLastName());
+            res.put("email", user1.getEmail());
+            res.put("imageId", fileObject);
+            res.put("TimeExpires", approve.getTimeExpires());
+
+
+            return new ResponseEntity<>(res.toString(), HttpStatus.OK);
+
+        } catch (DuplicateKeyException ex) {
+            res.put("error_message", "DUPLICATE ERROR MESSAGE ");
+            return new ResponseEntity<>(res.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (Exception ex) {
+            res.put("error_message", "server error  ");
+            ex.printStackTrace();
+            return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
     public ResponseEntity<String> userDelete(int userId, String accessToken) throws SQLException {
         JSONObject res = new JSONObject();
@@ -366,6 +366,7 @@ public class UserService {
             }
 
             User user = this.get(userId);
+
             if (user == null) {
                 res.put("message", "not found ");
                 return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
@@ -387,7 +388,6 @@ public class UserService {
                 this.imageService.delete(imageId);
                 this.imageService.deleteFile(image);
             }
-
             this.accessTokenService.deleteByUserId(userId);
             this.refreshTokenService.deleteByUserId(userId);
             this.toDoListService.deleteBYUserId(userId);

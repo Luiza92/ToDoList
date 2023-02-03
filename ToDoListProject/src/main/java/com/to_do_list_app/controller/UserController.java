@@ -35,6 +35,10 @@ public class UserController {
         JSONObject res = new JSONObject();
 
         try {
+            if(modelTO == null){
+                res.put("error_message", " you didn't provide required fields");
+                return new ResponseEntity<>(res.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
+            }
             return userService.userAdd(modelTO, file);
 
         } catch (DuplicateKeyException ex) {

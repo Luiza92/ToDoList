@@ -66,7 +66,7 @@ public class RegistrationService {
             String email = modelTO.getEmail();
 
 
-            if (userValidation.isValidUsername(modelTO.getUsername()) == false) {
+            if (modelTO.getUsername() == null || !userValidation.isValidUsername(modelTO.getUsername())) {
                 res.put("error_message", "Error Invalid Username ");
                 System.out.println("username- " + res);
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
@@ -76,17 +76,17 @@ public class RegistrationService {
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
 
-            if (userValidation.isValidFirstName(modelTO.getFirstName()) == false) {
+            if (modelTO.getFirstName() == null || !userValidation.isValidFirstName(modelTO.getFirstName())) {
                 res.put("error_message", "Error Invalid FirstName ");
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
 
-            if (userValidation.isValidLastName(modelTO.getLastName()) == false) {
+            if (modelTO.getLastName() == null || !userValidation.isValidLastName(modelTO.getLastName())) {
                 res.put("error_message", "Error Invalid LastName ");
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
 
-            if (userValidation.isValidEmail(modelTO.getEmail()) == false) {
+            if (modelTO.getEmail() == null || !userValidation.isValidEmail(modelTO.getEmail())) {
                 res.put("error_message", "Error Invalid Email");
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
@@ -96,12 +96,12 @@ public class RegistrationService {
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
 
-            if (!modelTO.getPassword().equals(modelTO.getConfirmPassword())) {
+            if (modelTO.getConfirmPassword() == null || modelTO.getPassword() == null || !modelTO.getPassword().equals(modelTO.getConfirmPassword())) {
                 res.put("error message - ", "password does not match");
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
 
-            if (userValidation.isValidPassword(modelTO.getPassword()) == false) {
+            if (!userValidation.isValidPassword(modelTO.getPassword())) {
                 res.put("error_message", "Error Invalid Password");
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
@@ -111,11 +111,10 @@ public class RegistrationService {
                 return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
             }
 
-            if (file.getContentType().startsWith("image") == false) {
+            if (file.getContentType() == null || !file.getContentType().startsWith("image")) {
                 res.put("error_message", "invalid image file");
                 return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
             }
-
 
             GenerateUUID generateUUID = new GenerateUUID();
             String randomId = generateUUID.Generate();
@@ -230,41 +229,10 @@ public class RegistrationService {
     }
 
 
-    public ResponseEntity<String> editProfile(@NonNull User modelTO, @NonNull MultipartFile file, String accessToken) throws SQLException {
+    public ResponseEntity<String> editProfile(User modelTO, MultipartFile file, String accessToken) throws SQLException {
         JSONObject res = new JSONObject();
+
         try {
-            if (userValidation.isValidUsername(modelTO.getUsername()) == false) {
-                res.put("error_message", "Error Invalid Username");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidFirstName(modelTO.getFirstName()) == false) {
-                res.put("error_message", "Error Invalid FirstName");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidLastName(modelTO.getLastName()) == false) {
-                res.put("error_message", "Error Invalid LastName ");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidEmail(modelTO.getEmail()) == false) {
-                res.put("error_message", "Error Invalid Email");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (!modelTO.getPassword().equals(modelTO.getConfirmPassword())) {
-                res.put("error message - ", "password does not match");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            if (userValidation.isValidPassword(modelTO.getPassword()) == false) {
-                res.put("error_message", "Error Invalid Password");
-                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
-            }
-
-            user.setPassword(new BCryptPasswordEncoder().encode(modelTO.getPassword()));
-
 
             String aToken = accessToken;
             AccessToken accessToken1 = this.accessTokenService.getByAccessToken(aToken);
@@ -273,39 +241,117 @@ public class RegistrationService {
 
             User user = this.userService.getByUserId(userId);
 
-            Image img = this.imageService.get(user.getImageId());
-            JSONObject fileObject = img.toJson();
-
-            if (file.isEmpty()) {
-                res.put("error_message", "not found image ");
+            if (user == null) {
+                res.put("error_message", "user not found ");
                 return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
             }
 
-            if (file != null) {
+            if (modelTO.getUsername() != null && userValidation.isValidUsername(modelTO.getUsername()) == false) {
+                res.put("error_message", "Error Invalid Username");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getFirstName() != null && userValidation.isValidFirstName(modelTO.getFirstName()) == false) {
+                res.put("error_message", "Error Invalid FirstName");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getLastName() != null && userValidation.isValidLastName(modelTO.getLastName()) == false) {
+                res.put("error_message", "Error Invalid LastName ");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getEmail() != null && userValidation.isValidEmail(modelTO.getEmail()) == false) {
+                res.put("error_message", "Error Invalid Email");
+                return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+            }
+
+            if (modelTO.getConfirmPassword() != null && modelTO.getPassword() != null) {
+
+                if (!modelTO.getPassword().equals(modelTO.getConfirmPassword())) {
+                    res.put("error message - ", "password does not match");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+                }
+
+                if (modelTO.getPassword() != null && userValidation.isValidPassword(modelTO.getPassword()) == false) {
+                    res.put("error_message", "Error Invalid Password");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+                }
+
+                user.setPassword(new BCryptPasswordEncoder().encode(modelTO.getPassword()));
+            }
+
+            Image img = this.imageService.get(user.getImageId());
+            JSONObject fileObject = null;
+
+            if (file != null && !file.isEmpty()) {
 
                 if (file.getContentType().startsWith("image") == false) {
                     res.put("error_message", "invalid image file");
                     return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
                 }
-                this.imageService.deleteFile(img);
-                this.imageService.delete(img.getId());
+
+                if (file.getContentType().startsWith("image") == false) {
+                    res.put("error_message", "invalid image file");
+                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+                }
+
+                if (img != null) {
+                    this.imageService.deleteFile(img);
+                    this.imageService.delete(img.getId());
+
+                }
                 fileObject = this.imageService.saveFile(file, "image");
                 System.err.println(fileObject + "- fileObject");
+
+            } else {
+                if (img != null) {
+                    fileObject = img.toJson();
+                }
+            }
+            if (fileObject != null) {
+                user.setImage(fileObject);
+                user.setImageId(fileObject.getInt("id"));
             }
 
-            user.setImage(fileObject);
-            user.setImageId(fileObject.getInt("id"));
+//            JSONObject fileObject = img.toJson();
+//
+//            if (file.isEmpty()) {
+//                res.put("error_message", "not found image ");
+//                return new ResponseEntity<>(res.toString(), HttpStatus.NOT_FOUND);
+//            }
+//
+//            if (file != null) {
+//
+//                if (file.getContentType().startsWith("image") == false) {
+//                    res.put("error_message", "invalid image file");
+//                    return new ResponseEntity<>(res.toString(), HttpStatus.BAD_REQUEST);
+//                }
+//                this.imageService.deleteFile(img);
+//                this.imageService.delete(img.getId());
+//                fileObject = this.imageService.saveFile(file, "image");
+//                System.err.println(fileObject + "- fileObject");
+//            }
 
-            JSONObject roleObject = this.roleService.roleGet(user.getRoleId());
+//            user.setImage(fileObject);
+//            user.setImageId(fileObject.getInt("id"));
 
-            System.out.println("rolId " + roleObject);
+       //     JSONObject roleObject = this.roleService.roleGet(user.getRoleId());
 
-            user.setUsername(modelTO.getUsername());
-            user.setFirstName(modelTO.getFirstName());
-            user.setLastName(modelTO.getLastName());
-            user.setEmail(modelTO.getEmail());
+            if (modelTO.getUsername() != null) {
+                user.setUsername(modelTO.getUsername());
+            }
+            if (modelTO.getFirstName() != null) {
+                user.setFirstName(modelTO.getFirstName());
+            }
+            if (modelTO.getLastName() != null) {
+                user.setLastName(modelTO.getLastName());
+            }
+            if (modelTO.getEmail() != null) {
+                user.setEmail(modelTO.getEmail());
+            }
+
             user.setUpdatedAt(modelTO.getUpdatedAt());
-
 
             this.userService.update(user);
 

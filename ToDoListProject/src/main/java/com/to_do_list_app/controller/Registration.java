@@ -93,7 +93,7 @@ public class Registration {
     }
 
     @PutMapping(path = "/api/editProfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateProfile(@ModelAttribute User modelTO, @RequestParam("file") MultipartFile file, @RequestHeader Map<String, String> headers) throws JSONException {
+    public ResponseEntity<?> updateProfile(@ModelAttribute User modelTO, @RequestParam(required = false, name="file") MultipartFile file, @RequestHeader Map<String, String> headers) throws JSONException {
 
         JSONObject res = new JSONObject();
         try {
