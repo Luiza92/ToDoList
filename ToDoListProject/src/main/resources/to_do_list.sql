@@ -28,7 +28,7 @@ CREATE TABLE `access_token` (
   `expired_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `refresh_token_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `access_token` */
 
@@ -42,7 +42,7 @@ CREATE TABLE `approve` (
   `random_id` varchar(255) NOT NULL,
   `time_expires` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `approve` */
 
@@ -55,9 +55,14 @@ CREATE TABLE `images` (
   `file_name` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `images` */
+
+insert  into `images`(`id`,`file_name`,`path`) values 
+(16,'50190869-c90a-4665-bff3-62407418d329_photo_2023-01-11_17-07-00.jpg','uploads/image/50190869-c90a-4665-bff3-62407418d329_photo_2023-01-11_17-07-00.jpg'),
+(21,'4c77722d-b717-47c4-ae1a-cb1b52da5fa6_photo_2023-01-11_17-07-00.jpg','uploads/image/4c77722d-b717-47c4-ae1a-cb1b52da5fa6_photo_2023-01-11_17-07-00.jpg'),
+(24,'e60a5313-7e04-4de8-9f61-753079563dee_photo_2023-01-11_17-07-11.jpg','uploads/image/e60a5313-7e04-4de8-9f61-753079563dee_photo_2023-01-11_17-07-11.jpg');
 
 /*Table structure for table `permissions` */
 
@@ -94,9 +99,16 @@ CREATE TABLE `refresh_token` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `expired_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `refresh_token` */
+
+insert  into `refresh_token`(`id`,`user_id`,`token`,`created_at`,`expired_at`) values 
+(27,13,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY4MDM1OTc3MX0._6OolPLJ1-GASj2rorz8-4x0BVdYSlI3rfkU-h05aWF9YdIMc6nIGfnAPLYkzG7dxuJqeiIiZLJGTG3yCiauwg','2023-01-31 18:36:11','2023-04-01 18:36:11'),
+(28,13,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY4MDQzMTc2NX0.324KlMHQ8PvKWHRW84Mf1Oras5GndrBhbfcF9li23Gbw4chsnefavHa23P7-otHcgevxD8yAWrKz0jB-_7akVg','2023-02-01 14:36:05','2023-04-02 14:36:05'),
+(29,13,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY4MDQzNTM4OX0.3TdcXDwFG5GPMeGSsosDBaZBliBnXKNvYmDejmYZ6oj-Xt2V9eTvh9WjLQ3iKu_6pa1ZmnNVn5ijBIzHMFSBNA','2023-02-01 15:36:29','2023-04-02 15:36:29'),
+(30,1,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY4MDYxMDg3N30.s1nZQbYuv4Q2lFKreIlVP9B0H9KwrqW_v3i9EJpz22WIK9oYYKefaq0LSbPf2dwZl8jqS38ZAKbEcd_wNAGOeQ','2023-02-03 16:21:17','2023-04-04 16:21:17'),
+(31,1,'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWl6YSIsImV4cCI6MTY4MDYxMjE3OH0.ikq5DPP7qsUQ9S8Nt2lP1ElQZgYhwMez7wUMqH9nfe8JCE1O7C2Hrs0TuNB1PhtxAzRW3pI6tLeQ2PE2BLryWA','2023-02-03 16:42:58','2023-04-04 16:42:58');
 
 /*Table structure for table `roles` */
 
@@ -128,7 +140,7 @@ CREATE TABLE `to_do_list` (
   `is_complete` smallint(6) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `to_do_list` */
 
@@ -151,12 +163,57 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`,`username`,`email`),
   UNIQUE KEY `UNIQUE` (`username`),
   UNIQUE KEY `UNIQUE_EMAILe` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`username`,`first_name`,`last_name`,`email`,`password`,`created_at`,`updated_at`,`image_id`,`role_id`,`status`) values 
-(1,'luiza','luiza','harutyuinayan','luiza.herzeyaunyan20@gmail.com','$2a$10$/T8XIYShq0E4IpfpXABwuOH8yAtKL4JHQjJFhyr6j51Zlgur4Uyi2','2023-01-27 18:44:40','2023-01-30 11:55:32',20,1,1);
+(1,'luiza','luiza','harutyunyan','luiza.harutyunyan20@gmail.com','$2a$10$e7Y6mq4zG0G4gQ2jKZ5ppOHwZYOP1edhn832z85oVSo7Fkv4ZezTG','2023-01-31 18:36:42','2023-02-03 16:42:54',24,1,1);
+
+/*!50106 set global event_scheduler = 1*/;
+
+/* Event structure for event `token_delete` */
+
+/*!50106 DROP EVENT IF EXISTS `token_delete`*/;
+
+DELIMITER $$
+
+/*!50106 CREATE DEFINER=`root`@`localhost` EVENT `token_delete` ON SCHEDULE EVERY 1 MINUTE STARTS '2023-02-07 14:53:23' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+  DELETE
+  FROM
+    access_token
+  WHERE  expired_at  < CURRENT_TIMESTAMP ();
+   
+    DELETE
+    from
+     refresh_token
+  WHERE  expired_at  < CURRENT_TIMESTAMP ();
+    END */$$
+DELIMITER ;
+
+/* Event structure for event `unauthorization_user_delete` */
+
+/*!50106 DROP EVENT IF EXISTS `unauthorization_user_delete`*/;
+
+DELIMITER $$
+
+/*!50106 CREATE DEFINER=`root`@`localhost` EVENT `unauthorization_user_delete` ON SCHEDULE EVERY 1 MINUTE STARTS '2023-02-07 14:47:35' ON COMPLETION NOT PRESERVE ENABLE DO begin
+  DELETE
+  FROM
+    users
+  WHERE STATUS = 0
+    AND id IN
+    (SELECT
+      user_id
+    FROM
+      approve
+    WHERE approve.`time_expires` < CURRENT_TIMESTAMP ());
+    delete
+    FROM
+      approve
+    WHERE approve.`time_expires` < CURRENT_TIMESTAMP ();
+    end */$$
+DELIMITER ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -29,6 +29,7 @@ public interface UserRepository {
 
     int update(User user) throws SQLException;
 
+  
     List<User> getAllUsers(String limit, String skip);
 
 }
